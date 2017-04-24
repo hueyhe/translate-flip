@@ -10,6 +10,9 @@ module.exports = {
     filename: '[name].min.js',
     path: path.resolve(__dirname, '../../dist')
   },
+  resolve: {
+    extensions: ['.js', '.json', '.css']
+  },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({
       compress: {
@@ -19,5 +22,10 @@ module.exports = {
       sourceMap: false
     })
   ],
+  module: {
+    rules: [
+      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
+    ]
+  },
   devtool: 'hidden-source-map'
 };
