@@ -1,0 +1,15 @@
+{
+  "name": "translate-flip",
+  "version": "0.0.1",
+  "description": "FLIP 高性能动画库",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "./node_modules/.bin/webpack --config ./config/webpack/webpack.config.js"
+  },
+  "repository": "https://github.com/hueyhe/translate-flip.git",
+  "author": "hueyhe <sihonghuey@163.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^2.4.1"
+  }
+}
