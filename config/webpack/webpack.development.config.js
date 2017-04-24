@@ -10,10 +10,18 @@ module.exports = {
     filename: '[name].js',
     path: path.resolve(__dirname, '../../dist')
   },
+  resolve: {
+    extensions: ['.js', '.json', '.css']
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"development"',
     })
   ],
-  devtool: 'eval-source-map'
+  module: {
+    rules: [
+      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
+    ]
+  },
+  devtool: 'inline-source-map'
 };
