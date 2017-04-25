@@ -39,6 +39,7 @@ FLIP
       last: {
         x: 34,
         y: 70,
+        scale: 0.5,
       },
       duration: 800,
     },

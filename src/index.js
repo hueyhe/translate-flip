@@ -35,6 +35,7 @@ class FLIP {
   /**
    * 获取 FLIP 实例
    *
+   * @private
    * @static
    * @return {object} 返回 FLIP 实例
    */
@@ -54,6 +55,40 @@ class FLIP {
     };
   }
 
+  static invert(element, origin, last) {
+    const el = element;
+
+    const {
+      layout: {
+        top: originTop,
+        left: originLeft,
+        width: originWidth,
+        height: originHeight,
+      },
+    } = origin;
+
+    const {
+      layout: {
+        top,
+        left,
+        width,
+        height,
+      },
+    } = last;
+
+    const invert = {
+      x: originLeft - left,
+      y: originTop - top,
+      sx: originWidth / width,
+      sy: originHeight / height,
+    };
+
+    el.style.transformOrigin = '0 0';
+    el.style.transform =
+      `translate3d(${invert.x}px, ${invert.y}px, 0)
+       scale(${invert.sx}, ${invert.sy})`;
+  }
+
   magic(element, last, duration) {
     return new Promise((resolve, reject) => {
       const {
@@ -65,6 +100,7 @@ class FLIP {
       const {
         x,
         y,
+        scale,
       } = last;
 
       // 参数合法性检查
@@ -80,29 +116,45 @@ class FLIP {
       }
       flipUnit = this.updateFlipUnit(el.dataset.flipId, el);
 
+      // const {
+      //   stats: {
+      //     layout: originLayout,
+      //     // opacity: originOpacity,
+      //   },
+      // } = flipUnit;
       const {
-        stats: {
-          layout: originLayout,
-          // opacity: originOpacity,
-        },
+        stats,
       } = flipUnit;
 
       // 关闭动画
       el.style.transition = '';
 
       requestAnimationFrame(() => {
+        // Last
         if (utils.exists(x)) {
           el.style.marginLeft = `${x}px`;
         }
         if (utils.exists(y)) {
           el.style.marginTop = `${y}px`;
         }
+        if (utils.exists(scale)) {
+          el.style.width = `${stats.layout.width * scale}px`;
+          el.style.height = `${stats.layout.height * scale}px`;
+        }
 
         const layout = utils.getLayout(el);
         // const opacity = utils.getOpacity(el);
 
         // Invert
-        el.style.transform = `translate3d(${originLayout.left - layout.left}px, ${originLayout.top - layout.top}px, 0)`;
+        // el.style.transform =
+        //   `translate3d(
+        //     ${originLayout.left - layout.left}px,
+        //     ${originLayout.top - layout.top}px,
+        //     0
+        //   )`;
+        FLIP.invert(el, stats, {
+          layout,
+        });
 
         requestAnimationFrame(() => {
           // 应用动画
@@ -146,6 +198,7 @@ class FLIP {
   /**
    * 根据 flip id 获取对应的 flip 单元
    *
+   * @private
    * @param {string} flipId - flip 单元的唯一标识
    * @return {FlipUnit} 一个包含节点做 flip 动画初始状态信息及唯一标识的对象
    */
