@@ -1,4 +1,8 @@
 export default {
+  exists(o) {
+    return o !== null && o !== undefined;
+  },
+
   getLayout(el) {
     if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
       return null;

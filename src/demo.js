@@ -11,6 +11,7 @@ FLIP
     x: 160,
     y: 50,
   })
-  .then((flip) => {
-    console.log(flip);
-  });
+  .then(flip => flip.magic(flipElement, {
+    x: 0,
+    y: 70,
+  }));

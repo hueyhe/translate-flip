@@ -55,60 +55,71 @@ class FLIP {
   }
 
   magic(element, last) {
-    const {
-      duration: defaultDuration,
-    } = this.default;
+    return new Promise((resolve, reject) => {
+      const {
+        duration: defaultDuration,
+      } = this.default;
 
-    const el = element;
+      const el = element;
 
-    const {
-      x,
-      y,
-    } = last;
+      const {
+        x,
+        y,
+      } = last;
 
-    // 参数合法性检查
-    if (!utils.isDOMElement(el) && !utils.isDOMNode(el)) {
-      return Promise.reject(new Error(`${el} is not a dom element.`));
-    }
+      // 参数合法性检查
+      if (!utils.isDOMElement(el) && !utils.isDOMNode(el)) {
+        reject(new Error(`${el} is not a dom element.`));
+      }
 
-    // 存储节点信息
-    // 节点信息一旦登录，就可以开始 FLIP 动画
-    let flipUnit = this.getFlipUnit(el.dataset.flipId);
-    if (!flipUnit) {
-      flipUnit = this.saveFlipUnit(el);
-    }
+      // 存储节点信息
+      // 节点信息一旦登录，就可以开始 FLIP 动画
+      let flipUnit = this.getFlipUnit(el.dataset.flipId);
+      if (!flipUnit) {
+        flipUnit = this.saveFlipUnit(el);
+      }
+      flipUnit = this.updateFlipUnit(el.dataset.flipId, el);
 
-    const {
-      stats: {
-        layout: originLayout,
-        // opacity: originOpacity,
-      },
-    } = flipUnit;
+      const {
+        stats: {
+          layout: originLayout,
+          // opacity: originOpacity,
+        },
+      } = flipUnit;
 
-    // 关闭动画
-    el.style.transition = '';
+      // 关闭动画
+      el.style.transition = '';
 
-    if (x) {
-      el.style.marginLeft = `${x}px`;
-    }
-    if (y) {
-      el.style.marginTop = `${y}px`;
-    }
+      requestAnimationFrame(() => {
+        if (utils.exists(x)) {
+          el.style.marginLeft = `${x}px`;
+        }
+        if (utils.exists(y)) {
+          el.style.marginTop = `${y}px`;
+        }
 
-    const layout = utils.getLayout(el);
-    // const opacity = utils.getOpacity(el);
+        const layout = utils.getLayout(el);
+        // const opacity = utils.getOpacity(el);
 
-    // Invert
-    el.style.transform = `translate3d(${originLayout.left - layout.left}px, ${originLayout.top - layout.top}px, 0)`;
+        // Invert
+        el.style.transform = `translate3d(${originLayout.left - layout.left}px, ${originLayout.top - layout.top}px, 0)`;
 
-    requestAnimationFrame(() => {
-      // 应用动画
-      el.style.transition = `transform ${defaultDuration}ms ease`;
-      // Play!
-      el.style.transform = '';
+        requestAnimationFrame(() => {
+          // 应用动画
+          el.style.transition = `transform ${defaultDuration}ms ease`;
+          // Play!
+          el.style.transform = '';
+        });
+
+        el.addEventListener('transitionend', () => {
+          el.style.transition = '';
+          resolve(this);
+        }, {
+          capture: false,
+          once: true,
+        });
+      });
     });
-
-    return Promise.resolve(this);
   }
 
   /**
@@ -157,6 +168,18 @@ class FLIP {
       stats: {
         layout: utils.getLayout(el),
         opacity: utils.getOpacity(el),
+      },
+    };
+    return this.flipUnits[flipId];
+  }
+
+  updateFlipUnit(flipId, element) {
+    this.flipUnits[flipId] = {
+      el: element,
+      id: flipId,
+      stats: {
+        layout: utils.getLayout(element),
+        opacity: utils.getOpacity(element),
       },
     };
     return this.flipUnits[flipId];
