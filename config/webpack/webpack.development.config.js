@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   context: path.resolve(__dirname, '../../'),
   entry: {
-    'translate-flip': './src',
+    'translate-flip': ['babel-polyfill', './src'],
     'demo': './src/demo.js'
   },
   output: {
