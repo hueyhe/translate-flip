@@ -20,5 +20,21 @@
  * SOFTWARE.
  */
 
-console.log('let us rock');
-console.warn('here is a warning');
+/**
+ * FLIP动画队列基础类
+ *
+ * @see https://aerotwist.com/blog/flip-your-animations
+ * @author huey
+ */
+
+class FLIP {
+
+  static instance = null;
+
+  static getInstance() {
+    return FLIP.instance;
+  }
+
+}
+
+export default FLIP;
