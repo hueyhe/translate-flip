@@ -4,7 +4,8 @@ var webpack = require('webpack');
 module.exports = {
   context: path.resolve(__dirname, '../../'),
   entry: {
-    'translate-flip': './src'
+    'translate-flip': './src',
+    'demo': './src/demo.js'
   },
   output: {
     filename: '[name].js',
@@ -13,15 +14,23 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.json', '.css']
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"development"',
-    })
-  ],
   module: {
     rules: [
       { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
     ]
   },
+  devServer: {
+    contentBase: [path.join(__dirname, '../../demo'), path.join(__dirname, '../../dist')],
+    host: '0.0.0.0',
+    port: 4619,
+    hot: true,
+    publicPath: 'http://0.0.0.0:4619/dist/'
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"development"',
+    }),
+    new webpack.HotModuleReplacementPlugin()
+  ],
   devtool: 'inline-source-map'
 };

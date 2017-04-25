@@ -4,6 +4,7 @@
   "description": "FLIP 高性能动画库",
   "main": "src/index.js",
   "scripts": {
+    "dev": "NODE_ENV=development ./node_modules/.bin/webpack-dev-server --config ./config/webpack/webpack.config.js",
     "build": "./node_modules/.bin/webpack --config ./config/webpack/webpack.config.js"
   },
   "repository": "https://github.com/hueyhe/translate-flip.git",
@@ -12,6 +13,7 @@
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
-    "webpack": "^2.4.1"
+    "webpack": "^2.4.1",
+    "webpack-dev-server": "^2.4.4"
   }
 }
