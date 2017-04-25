@@ -54,7 +54,7 @@ class FLIP {
     };
   }
 
-  magic(element, last) {
+  magic(element, last, duration) {
     return new Promise((resolve, reject) => {
       const {
         duration: defaultDuration,
@@ -106,7 +106,7 @@ class FLIP {
 
         requestAnimationFrame(() => {
           // 应用动画
-          el.style.transition = `transform ${defaultDuration}ms ease`;
+          el.style.transition = `transform ${duration || defaultDuration}ms ease`;
           // Play!
           el.style.transform = '';
         });
@@ -120,6 +120,18 @@ class FLIP {
         });
       });
     });
+  }
+
+  magicBundle(flips) {
+    const promises = flips.map((flip) => {
+      const {
+        element,
+        last,
+        duration,
+      } = flip;
+      return this.magic(element, last, duration);
+    });
+    return Promise.all(promises);
   }
 
   /**
