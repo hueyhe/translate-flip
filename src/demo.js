@@ -1,47 +1,38 @@
 import FLIP from './index';
 
+const button = window.document.createElement('button');
+document.body.appendChild(button);
+button.innerHTML = 'Test';
+
 const flipElement = window.document.createElement('div');
-flipElement.style.position = 'absolute';
+flipElement.style.position = '';
 flipElement.style.width = '200px';
 flipElement.style.height = '200px';
 flipElement.style.backgroundColor = 'red';
 document.body.appendChild(flipElement);
 
-const otherElement = window.document.createElement('div');
-otherElement.style.position = 'absolute';
-otherElement.style.width = '200px';
-otherElement.style.height = '200px';
-otherElement.style.backgroundColor = 'blue';
-document.body.appendChild(otherElement);
+button.addEventListener('click', () => {
+  FLIP.magic(flipElement, {
+    x: 500 * Math.random(),
+    y: 500 * Math.random(),
+  }, 500).then(flip => console.log(flip, 'done'));
+});
 
-// FLIP
-//   .magic(flipElement, {
-//     x: 160,
-//     y: 50,
-//   })
-//   .then(flip => flip.magic(flipElement, {
-//     x: 0,
-//     y: 70,
-//   }));
+flipElement.addEventListener('mouseenter', () => {
+  FLIP.magic(flipElement, {
+    x: 500 * Math.random(),
+    y: 500 * Math.random(),
+  }, 500).then(flip => console.log(flip, 'done'));
+});
 
-FLIP
-  .magicBundle([
-    {
-      element: flipElement,
-      last: {
-        x: 160,
-        y: 50,
-      },
-      duration: 500,
-    },
-    {
-      element: otherElement,
-      last: {
-        x: 34,
-        y: 70,
-        scale: 0.5,
-      },
-      duration: 800,
-    },
-  ])
-  .then(flip => console.log(flip));
+// const otherElement = window.document.createElement('div');
+// otherElement.style.position = 'absolute';
+// otherElement.style.width = '200px';
+// otherElement.style.height = '200px';
+// otherElement.style.backgroundColor = 'blue';
+// document.body.appendChild(otherElement);
+
+FLIP.magic(flipElement, {
+  x: 200,
+  y: 50,
+}, 500).then(flip => console.log(flip, 'done'));

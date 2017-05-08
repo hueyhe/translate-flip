@@ -3,6 +3,11 @@ export default {
     return o !== null && o !== undefined;
   },
 
+  getComputedStyle(el) {
+    // TODO polyfill
+    return window.getComputedStyle(el);
+  },
+
   getLayout(el) {
     if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
       return null;
@@ -14,7 +19,7 @@ export default {
     if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
       return null;
     }
-    return parseFloat(window.getComputedStyle(el).opacity);
+    return parseFloat(this.getComputedStyle(el).opacity);
   },
 
   /**
