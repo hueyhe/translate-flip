@@ -1,8 +1,8 @@
 {
   "name": "translate-flip",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "FLIP 高性能动画库",
-  "main": "src/index.js",
+  "main": "dist/translate-flip.min.js",
   "scripts": {
     "dev": "NODE_ENV=development ./node_modules/.bin/webpack-dev-server --config ./config/webpack/webpack.config.js",
     "build": "NODE_ENV=production ./node_modules/.bin/webpack --config ./config/webpack/webpack.config.js"
