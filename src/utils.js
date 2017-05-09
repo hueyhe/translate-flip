@@ -15,6 +15,17 @@ export default {
     return el.getBoundingClientRect();
   },
 
+  getMargin(el) {
+    if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
+      return null;
+    }
+    const computedStyle = this.getComputedStyle(el);
+    return {
+      left: parseFloat(computedStyle.marginLeft),
+      top: parseFloat(computedStyle.marginTop),
+    };
+  },
+
   getOpacity(el) {
     if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
       return null;
