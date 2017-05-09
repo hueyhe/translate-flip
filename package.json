@@ -1,17 +1,30 @@
 {
   "name": "translate-flip",
-  "version": "0.0.1",
+  "version": "0.2.2",
   "description": "FLIP 高性能动画库",
-  "main": "src/index.js",
+  "main": "dist/translate-flip.min.js",
   "scripts": {
-    "build": "./node_modules/.bin/webpack --config ./config/webpack/webpack.config.js"
+    "dev": "NODE_ENV=development ./node_modules/.bin/webpack-dev-server --config ./config/webpack/webpack.config.js",
+    "build": "NODE_ENV=production ./node_modules/.bin/webpack --config ./config/webpack/webpack.config.js"
   },
   "repository": "https://github.com/hueyhe/translate-flip.git",
   "author": "hueyhe <sihonghuey@163.com>",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.24.1",
+    "babel-eslint": "^7.2.3",
     "babel-loader": "^7.0.0",
-    "webpack": "^2.4.1"
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.1.3",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-loader": "^1.7.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "webpack": "^2.4.1",
+    "webpack-dev-server": "^2.4.4"
   }
 }
