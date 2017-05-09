@@ -22,10 +22,12 @@
 
 import utils from './utils';
 
-// FLIP warnning 前缀
-const WARNNING_PREFIX = '[FLIP WARNNING]:';
 // FLIP error 前缀
 const ERROR_PREFIX = '[FLIP ERROR]:';
+// FLIP info 前缀
+const INFO_PREFIX = '[FLIP INFO]:';
+// FLIP warnning 前缀
+// const WARNNING_PREFIX = '[FLIP WARNNING]:';
 
 /**
  * FLIP动画队列基础类
@@ -280,8 +282,8 @@ class FLIP {
     // 若存在上一次在进行中的动画，则中断上次的动画
     const promise = flipUnit.promise || {};
     if (typeof promise.reject === 'function') {
-      // promise.reject(`${WARNNING_PREFIX} FLIP ${flipId} animation aborted.`);
-      console.warn(`${WARNNING_PREFIX} FLIP ${flipId} animation aborted.`);
+      // promise.reject(`${INFO_PREFIX} FLIP ${flipId} animation aborted.`);
+      console.info(`${INFO_PREFIX} FLIP ${flipId} animation aborted.`);
     }
     flipUnit.promise = {
       resolve,
