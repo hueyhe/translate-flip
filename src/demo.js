@@ -30,7 +30,9 @@ button.addEventListener('click', () => {
     y: 500 * Math.random(),
     // opacity: 0,
     scale: 0.5,
-  }, 1000, FLIP.Easing.MDCubic).then(el => console.log(el));
+  }, 1000, FLIP.Easing.MDCubic, {
+    use3d: false,
+  }).then(el => console.log(el));
 });
 
 flipElement.addEventListener('mousemove', () => {

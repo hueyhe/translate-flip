@@ -65,11 +65,15 @@ class FLIP {
     // 默认配置
     this.default = {
       duration: 1000, // 动画时长
+      options: {
+        use3d: true,
+      },
     };
   }
 
   /**
    * @typedef UnitStats - FLIP 动画单元的位置与样式数据对象
+   *
    * @type object
    * @prop {object} layout - 节点根据 Web API element.getBoundingClientRect() 获取的数据对象
    * @prop {object} margin - 节点 margin 数据
@@ -79,7 +83,15 @@ class FLIP {
    */
 
   /**
+   * @typedef FlipOptions - FLIP 动画单元配置项
+   *
+   * @type object
+   * @prop {boolean} [use3d=true] - 是否使用 translate3d 进行位移动画
+   */
+
+  /**
    * @typedef FlipUnit - FLIP 动画单元
+   *
    * @type object
    * @prop {UnitStats} current - flip 单元施放魔法时的位置及样式信息对象
    * @prop {string} id - flip 单元唯一标识
@@ -96,10 +108,10 @@ class FLIP {
    *
    * @private
    * @param {object} element - DOM 节点
+   * @param {FlipOptions} options - 动画配置项
    * @return {FlipUnit} 节点对应的 FLIP 动画单元
    */
-  first(element) {
-    // console.log('first');
+  first(element, options) {
     const el = element;
 
     // 存储节点信息
@@ -114,6 +126,11 @@ class FLIP {
       // 更新节点当前位置相关信息
       flipUnit = this.updateFlipUnit(el);
     }
+
+    // 记录动画配置
+    const { options: defaultOptions } = this.default;
+    flipUnit.options = Object.assign({}, defaultOptions, options);
+
     // 关闭过渡动画
     el.style.transition = '';
 
@@ -179,12 +196,13 @@ class FLIP {
    * @return {FlipUnit} 节点对应的 FLIP 动画单元
    */
   invert(element) {
-    // console.log('invert');
-
     const el = element;
 
     const flipUnit = this.getFlipUnit(el.dataset.flipId);
-    const { current } = flipUnit;
+    const {
+      current,
+      options,
+    } = flipUnit;
 
     const {
       layout: {
@@ -216,9 +234,9 @@ class FLIP {
     };
 
     el.style.transformOrigin = '0 0';
-    el.style.transform =
-      `translate3d(${invert.x}px, ${invert.y}px, 0)
-       scale(${invert.sx}, ${invert.sy})`;
+    el.style.transform = options.use3d ?
+      `translate3d(${invert.x}px, ${invert.y}px, 0) scale(${invert.sx}, ${invert.sy})` :
+      `translate(${invert.x}px, ${invert.y}px) scale(${invert.sx}, ${invert.sy})`;
 
     flipUnit.el = el;
 
@@ -239,8 +257,6 @@ class FLIP {
    * @return {FlipUnit} 节点对应的 FLIP 动画单元
    */
   last(element, last) {
-    // console.log('last');
-
     const el = element;
 
     const {
@@ -310,9 +326,10 @@ class FLIP {
    * @param {number} last.y - 节点 y 轴位移，单位像素 px
    * @param {number} duration - 过渡动画持续时间，单位毫秒 ms
    * @param {string} easing - 过渡函数
+   * @param {FlipOptions} options - 动画配置项
    * @return {object} Promise 对象
    */
-  magic(element, last, duration, easing) {
+  magic(element, last, duration, easing, options) {
     // 本次动画动作的魔法棒
     // 每个 magic 调用都产生不同的魔法棒
     // 用于唯一识别一次 FLIP 动画调用
@@ -335,7 +352,7 @@ class FLIP {
 
       // FIRST
       // FLIP 动画第一步
-      flipUnit = this.first(el);
+      flipUnit = this.first(el, options);
       // 无论是否在动画中
       // 都要更新单元的 promise
       // 从而实现中断旧动画，继续新动画
@@ -397,8 +414,6 @@ class FLIP {
    * @return {FlipUnit} 一个包含节点做 flip 动画初始状态信息及唯一标识的对象
    */
   play(element, last, duration, easing = Easing.EaseInOut) {
-    // console.log('play');
-
     const el = element;
 
     const flipUnit = this.getFlipUnit(el.dataset.flipId);
