@@ -32,8 +32,12 @@
   "badges": {
     "list": [
       "npmversion",
-      "npmdownloads"
-    ]
+      "npmdownloads",
+      "daviddm"
+    ],
+    "config": {
+      "githubSlug": "hueyhe/translate-flip"
+    }
   },
   "maintainers": [
     "hueyhe <sihonghuey@163.com> (http://hueyhe.com)"

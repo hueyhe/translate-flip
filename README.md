@@ -9,6 +9,7 @@
 
 <span class="badge-npmversion"><a href="https://npmjs.org/package/translate-flip" title="View this project on NPM"><img src="https://img.shields.io/npm/v/translate-flip.svg" alt="NPM version" /></a></span>
 <span class="badge-npmdownloads"><a href="https://npmjs.org/package/translate-flip" title="View this project on NPM"><img src="https://img.shields.io/npm/dm/translate-flip.svg" alt="NPM downloads" /></a></span>
+<span class="badge-daviddm"><a href="https://david-dm.org/hueyhe/translate-flip" title="View the status of this project's dependencies on DavidDM"><img src="https://img.shields.io/david/hueyhe/translate-flip.svg" alt="Dependency Status" /></a></span>
 
 <!-- /BADGES -->
 
