@@ -20,14 +20,11 @@
  * SOFTWARE.
  */
 
+import Easing from './easing';
+
 import utils from './utils';
 
-// FLIP error 前缀
-const ERROR_PREFIX = '[FLIP ERROR]:';
-// FLIP info 前缀
-const INFO_PREFIX = '[FLIP INFO]:';
-// FLIP warnning 前缀
-// const WARNNING_PREFIX = '[FLIP WARNNING]:';
+import { ERROR_PREFIX, INFO_PREFIX } from './constants';
 
 /**
  * FLIP动画队列基础类
@@ -37,6 +34,12 @@ const INFO_PREFIX = '[FLIP INFO]:';
  */
 class FLIP {
 
+  /**
+   * FLIP 实例
+   *
+   * @private
+   * @type {object}
+   */
   static instance = null;
 
   /**
@@ -49,7 +52,10 @@ class FLIP {
   static getInstance() {
     if (FLIP.instance === null) {
       FLIP.instance = new FLIP();
+
+      FLIP.instance.Easing = Easing;
     }
+
     return FLIP.instance;
   }
 
@@ -303,9 +309,10 @@ class FLIP {
    * @param {number} last.x - 节点 x 轴位移，单位像素 px
    * @param {number} last.y - 节点 y 轴位移，单位像素 px
    * @param {number} duration - 过渡动画持续时间，单位毫秒 ms
+   * @param {string} easing - 过渡函数
    * @return {object} Promise 对象
    */
-  magic(element, last, duration) {
+  magic(element, last, duration, easing) {
     // 本次动画动作的魔法棒
     // 每个 magic 调用都产生不同的魔法棒
     // 用于唯一识别一次 FLIP 动画调用
@@ -356,7 +363,7 @@ class FLIP {
 
           // PLAY
           // FLIP 动画第四步
-          this.play(el, last, duration || defaultDuration);
+          this.play(el, last, duration || defaultDuration, easing);
         });
 
         function elTransitionEnd() {
@@ -386,9 +393,10 @@ class FLIP {
    * @param {object} last - 结束状态相对初始状态的各项数据偏移量
    * @param {number} last.opacity - 透明度
    * @param {number} duration - 动画时长，单位为毫秒 ms
+   * @param {string} easing - 过渡函数
    * @return {FlipUnit} 一个包含节点做 flip 动画初始状态信息及唯一标识的对象
    */
-  play(element, last, duration) {
+  play(element, last, duration, easing = Easing.EaseInOut) {
     // console.log('play');
 
     const el = element;
@@ -398,7 +406,7 @@ class FLIP {
     const { opacity } = last;
 
     // 应用动画
-    el.style.transition = `all ${duration}ms ease`;
+    el.style.transition = `all ${duration}ms ${easing}`;
     // Play!
     el.style.transform = '';
     if (utils.exists(opacity)) {
