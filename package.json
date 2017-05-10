@@ -5,10 +5,11 @@
   "main": "dist/translate-flip.min.js",
   "scripts": {
     "dev": "NODE_ENV=development ./node_modules/.bin/webpack-dev-server --config ./config/webpack/webpack.config.js",
-    "build": "NODE_ENV=production ./node_modules/.bin/webpack --config ./config/webpack/webpack.config.js"
+    "build": "NODE_ENV=production ./node_modules/.bin/webpack --config ./config/webpack/webpack.config.js",
+    "readme": "./node_modules/.bin/projectz compile"
   },
   "repository": "https://github.com/hueyhe/translate-flip.git",
-  "author": "hueyhe <sihonghuey@163.com>",
+  "author": "hueyhe <sihonghuey@163.com> (http://hueyhe.com)",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.24.1",
@@ -24,7 +25,20 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
+    "projectz": "^1.4.0",
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.4"
-  }
+  },
+  "badges": {
+    "list": [
+      "npmversion",
+      "npmdownloads"
+    ]
+  },
+  "maintainers": [
+    "hueyhe <sihonghuey@163.com> (http://hueyhe.com)"
+  ],
+  "contributors": [
+    "hueyhe <sihonghuey@163.com> (http://hueyhe.com)"
+  ]
 }
