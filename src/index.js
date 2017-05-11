@@ -259,18 +259,19 @@ class FLIP {
   last(element, last) {
     const el = element;
 
+    const flipUnit = this.getFlipUnit(el.dataset.flipId);
+    const { stats } = flipUnit;
+
+    const {
+      margin,
+      layout,
+    } = stats;
+
     const {
       x,
       y,
       scale,
     } = last;
-
-    const flipUnit = this.getFlipUnit(el.dataset.flipId);
-    const { stats } = flipUnit;
-    const {
-      margin,
-      layout,
-    } = stats;
 
     if (utils.exists(x)) {
       el.style.marginLeft = `${margin.left + x}px`;
@@ -340,6 +341,18 @@ class FLIP {
       // 参数合法性检查
       if (!utils.isDOMElement(el) && !utils.isDOMNode(el)) {
         reject(`${ERROR_PREFIX} ${el} is not a dom element.`);
+        return;
+      }
+      if (!utils.isObject(last)) {
+        reject(`${ERROR_PREFIX} ${last} is not valid. Please check whether your usage of param 'last' is correct.`);
+        return;
+      }
+      if (utils.exists(duration) && !utils.isNumber(duration)) {
+        reject(`${ERROR_PREFIX} ${duration} is not valid. Param 'duration' should be number or float.`);
+        return;
+      }
+      if (utils.exists(options) && !utils.isObject(options)) {
+        reject(`${ERROR_PREFIX} ${options} is not valid. Please check whether your usage of param 'options' is correct.`);
         return;
       }
 

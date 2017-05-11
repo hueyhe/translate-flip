@@ -58,4 +58,12 @@ export default {
         o && typeof o === 'object' && typeof o.nodeType === 'number' && typeof o.nodeName === 'string'
     );
   },
+
+  isNumber(o) {
+    return typeof o === 'number';
+  },
+
+  isObject(o) {
+    return this.exists(o) && typeof o === 'object' && !Array.isArray(o);
+  },
 };

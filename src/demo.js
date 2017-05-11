@@ -1,7 +1,6 @@
 import FLIP from './index';
 // const FLIP = require('./index');
 
-
 const button = window.document.createElement('button');
 document.body.appendChild(button);
 button.innerHTML = 'Test';
@@ -41,7 +40,7 @@ flipElement.addEventListener('mousemove', () => {
   FLIP.magic(flipElement, {
     x: 500 * Math.random(),
     y: 500 * Math.random(),
-  }, 500).then(el => console.log(el, 'done'));
+  }).then(el => console.log(el, 'done'));
 });
 
 // const otherElement = window.document.createElement('div');
