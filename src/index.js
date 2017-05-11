@@ -482,4 +482,4 @@ class FLIP {
 
 }
 
-export default FLIP.getInstance();
+module.exports = FLIP.getInstance();

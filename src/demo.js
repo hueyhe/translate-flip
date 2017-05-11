@@ -1,4 +1,6 @@
 import FLIP from './index';
+// const FLIP = require('./index');
+
 
 const button = window.document.createElement('button');
 document.body.appendChild(button);
