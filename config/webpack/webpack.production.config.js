@@ -8,7 +8,9 @@ module.exports = {
   },
   output: {
     filename: '[name].min.js',
-    path: path.resolve(__dirname, '../../dist')
+    path: path.resolve(__dirname, '../../dist'),
+    library: 'translate-flip',
+    libraryTarget: 'commonjs2',
   },
   resolve: {
     extensions: ['.js', '.json', '.css']
