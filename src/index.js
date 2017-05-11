@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 CAFUE Inc. All rights reserved.
+ * Copyright 2017 hueyhe. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,14 +20,11 @@
  * SOFTWARE.
  */
 
+import Easing from './easing';
+
 import utils from './utils';
 
-// FLIP error 前缀
-const ERROR_PREFIX = '[FLIP ERROR]:';
-// FLIP info 前缀
-const INFO_PREFIX = '[FLIP INFO]:';
-// FLIP warnning 前缀
-// const WARNNING_PREFIX = '[FLIP WARNNING]:';
+import { ERROR_PREFIX, INFO_PREFIX } from './constants';
 
 /**
  * FLIP动画队列基础类
@@ -37,6 +34,12 @@ const INFO_PREFIX = '[FLIP INFO]:';
  */
 class FLIP {
 
+  /**
+   * FLIP 实例
+   *
+   * @private
+   * @type {object}
+   */
   static instance = null;
 
   /**
@@ -49,7 +52,10 @@ class FLIP {
   static getInstance() {
     if (FLIP.instance === null) {
       FLIP.instance = new FLIP();
+
+      FLIP.instance.Easing = Easing;
     }
+
     return FLIP.instance;
   }
 
@@ -59,11 +65,15 @@ class FLIP {
     // 默认配置
     this.default = {
       duration: 1000, // 动画时长
+      options: {
+        use3d: true,
+      },
     };
   }
 
   /**
    * @typedef UnitStats - FLIP 动画单元的位置与样式数据对象
+   *
    * @type object
    * @prop {object} layout - 节点根据 Web API element.getBoundingClientRect() 获取的数据对象
    * @prop {object} margin - 节点 margin 数据
@@ -73,7 +83,15 @@ class FLIP {
    */
 
   /**
+   * @typedef FlipOptions - FLIP 动画单元配置项
+   *
+   * @type object
+   * @prop {boolean} [use3d=true] - 是否使用 translate3d 进行位移动画
+   */
+
+  /**
    * @typedef FlipUnit - FLIP 动画单元
+   *
    * @type object
    * @prop {UnitStats} current - flip 单元施放魔法时的位置及样式信息对象
    * @prop {string} id - flip 单元唯一标识
@@ -90,10 +108,10 @@ class FLIP {
    *
    * @private
    * @param {object} element - DOM 节点
+   * @param {FlipOptions} options - 动画配置项
    * @return {FlipUnit} 节点对应的 FLIP 动画单元
    */
-  first(element) {
-    // console.log('first');
+  first(element, options) {
     const el = element;
 
     // 存储节点信息
@@ -108,6 +126,11 @@ class FLIP {
       // 更新节点当前位置相关信息
       flipUnit = this.updateFlipUnit(el);
     }
+
+    // 记录动画配置
+    const { options: defaultOptions } = this.default;
+    flipUnit.options = Object.assign({}, defaultOptions, options);
+
     // 关闭过渡动画
     el.style.transition = '';
 
@@ -173,12 +196,13 @@ class FLIP {
    * @return {FlipUnit} 节点对应的 FLIP 动画单元
    */
   invert(element) {
-    // console.log('invert');
-
     const el = element;
 
     const flipUnit = this.getFlipUnit(el.dataset.flipId);
-    const { current } = flipUnit;
+    const {
+      current,
+      options,
+    } = flipUnit;
 
     const {
       layout: {
@@ -210,9 +234,9 @@ class FLIP {
     };
 
     el.style.transformOrigin = '0 0';
-    el.style.transform =
-      `translate3d(${invert.x}px, ${invert.y}px, 0)
-       scale(${invert.sx}, ${invert.sy})`;
+    el.style.transform = options.use3d ?
+      `translate3d(${invert.x}px, ${invert.y}px, 0) scale(${invert.sx}, ${invert.sy})` :
+      `translate(${invert.x}px, ${invert.y}px) scale(${invert.sx}, ${invert.sy})`;
 
     flipUnit.el = el;
 
@@ -233,8 +257,6 @@ class FLIP {
    * @return {FlipUnit} 节点对应的 FLIP 动画单元
    */
   last(element, last) {
-    // console.log('last');
-
     const el = element;
 
     const {
@@ -303,9 +325,11 @@ class FLIP {
    * @param {number} last.x - 节点 x 轴位移，单位像素 px
    * @param {number} last.y - 节点 y 轴位移，单位像素 px
    * @param {number} duration - 过渡动画持续时间，单位毫秒 ms
+   * @param {string} easing - 过渡函数
+   * @param {FlipOptions} options - 动画配置项
    * @return {object} Promise 对象
    */
-  magic(element, last, duration) {
+  magic(element, last, duration, easing, options) {
     // 本次动画动作的魔法棒
     // 每个 magic 调用都产生不同的魔法棒
     // 用于唯一识别一次 FLIP 动画调用
@@ -328,7 +352,7 @@ class FLIP {
 
       // FIRST
       // FLIP 动画第一步
-      flipUnit = this.first(el);
+      flipUnit = this.first(el, options);
       // 无论是否在动画中
       // 都要更新单元的 promise
       // 从而实现中断旧动画，继续新动画
@@ -356,7 +380,7 @@ class FLIP {
 
           // PLAY
           // FLIP 动画第四步
-          this.play(el, last, duration || defaultDuration);
+          this.play(el, last, duration || defaultDuration, easing);
         });
 
         function elTransitionEnd() {
@@ -386,11 +410,10 @@ class FLIP {
    * @param {object} last - 结束状态相对初始状态的各项数据偏移量
    * @param {number} last.opacity - 透明度
    * @param {number} duration - 动画时长，单位为毫秒 ms
+   * @param {string} easing - 过渡函数
    * @return {FlipUnit} 一个包含节点做 flip 动画初始状态信息及唯一标识的对象
    */
-  play(element, last, duration) {
-    // console.log('play');
-
+  play(element, last, duration, easing = Easing.EaseInOut) {
     const el = element;
 
     const flipUnit = this.getFlipUnit(el.dataset.flipId);
@@ -398,7 +421,7 @@ class FLIP {
     const { opacity } = last;
 
     // 应用动画
-    el.style.transition = `all ${duration}ms ease`;
+    el.style.transition = `all ${duration}ms ${easing}`;
     // Play!
     el.style.transform = '';
     if (utils.exists(opacity)) {

@@ -22,13 +22,17 @@ button.addEventListener('click', () => {
   //     .magic(el, {
   //       x: 500 * Math.random(),
   //       y: 500 * Math.random(),
+  //       scale: 1.6,
   //     }, 800);
   // });
   FLIP.magic(flipElement, {
     x: 500 * Math.random(),
     y: 500 * Math.random(),
-    opacity: 0,
-  }, 500).then(el => console.log(el));
+    // opacity: 0,
+    scale: 0.5,
+  }, 1000, FLIP.Easing.MDCubic, {
+    use3d: false,
+  }).then(el => console.log(el));
 });
 
 flipElement.addEventListener('mousemove', () => {
