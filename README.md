@@ -35,7 +35,7 @@ $ yarn add translate-flip
 
 ## 特点
 ### 极致轻量
-translate-flip 是一个十分轻量的动画库，打包后大小仅为 6.26 kb
+translate-flip 是一个十分轻量的动画库，打包后大小仅为 6.81 kb
 
 ### 高性能
 采用 FLIP 动画思想，确保动画的性能开销最小。如有兴趣请参考 [FLIP Your Animations](https://aerotwist.com/blog/flip-your-animations/)
