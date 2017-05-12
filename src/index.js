@@ -22,6 +22,7 @@
 
 import Easing from './easing';
 
+import matrix from './matrix';
 import utils from './utils';
 
 import { ERROR_PREFIX, INFO_PREFIX } from './constants';
@@ -163,9 +164,15 @@ class FLIP {
     const flipId = `flip-${(new Date()).getTime()}`;
     el.dataset.flipId = flipId;
 
-    const layout = utils.getLayout(el);
-    const margin = utils.getMargin(el);
-    const opacity = utils.getOpacity(el);
+    const realTimeStyle = utils.getRealTimeStyle(el);
+
+    const {
+      layout,
+      margin,
+      opacity,
+      transform,
+    } = realTimeStyle;
+
     this.flipUnits[flipId] = {
       id: flipId,
       el,
@@ -180,6 +187,10 @@ class FLIP {
         opacity,
       },
       preparing,
+      prevLast: {
+        layout,
+        transform,
+      },
     };
     return this.flipUnits[flipId];
   }
@@ -201,7 +212,8 @@ class FLIP {
     const flipUnit = this.getFlipUnit(el.dataset.flipId);
     const {
       current,
-      options,
+      // options,
+      prevLast,
     } = flipUnit;
 
     const {
@@ -212,6 +224,9 @@ class FLIP {
         height: originHeight,
       },
     } = current;
+
+    // 除 translate 与 scale 外的 transform matrix
+    let currentMatrix = 1;
 
     const last = {
       layout: utils.getLayout(el),
@@ -233,12 +248,40 @@ class FLIP {
       sy: originHeight / height,
     };
 
+    if (prevLast) {
+      const {
+        layout: {
+          top: prevTop,
+          left: prevLeft,
+          width: prevWidth,
+          height: prevHeight,
+        },
+        transform,
+      } = prevLast;
+      const prevInvert = {
+        x: originLeft - prevLeft,
+        y: originTop - prevTop,
+        sx: originWidth / prevWidth,
+        sy: originHeight / prevHeight,
+      };
+      // 原来应该进行的 invert matrix
+      const prevTranslateMatrix = matrix.convertTransformToMatrix(transform);
+      currentMatrix = matrix.excludeTSMatrix(
+        prevTranslateMatrix,
+        [prevInvert.x, prevInvert.y],
+        prevInvert.sx,
+      );
+    }
+
     el.style.transformOrigin = '0 0';
-    el.style.transform = options.use3d ?
-      `translate3d(${invert.x}px, ${invert.y}px, 0) scale(${invert.sx}, ${invert.sy})` :
-      `translate(${invert.x}px, ${invert.y}px) scale(${invert.sx}, ${invert.sy})`;
+    // el.style.transform = options.use3d ?
+    //   `translate3d(${invert.x}px, ${invert.y}px, 0) scale(${invert.sx}, ${invert.sy})` :
+    //   `translate(${invert.x}px, ${invert.y}px) scale(${invert.sx}, ${invert.sy})`;
+    const invertTransform = matrix.transformMatrix(currentMatrix, [invert.x, invert.y], invert.sx);
+    el.style.transform = invertTransform;
 
     flipUnit.el = el;
+    flipUnit.prevLast.layout = last.layout;
 
     return flipUnit;
   }
@@ -481,14 +524,20 @@ class FLIP {
     const el = element;
     const flipUnit = this.getFlipUnit(el.dataset.flipId);
 
-    const layout = utils.getLayout(el);
-    const opacity = utils.getOpacity(el);
+    const realTimeStyle = utils.getRealTimeStyle(el);
+
+    const {
+      layout,
+      opacity,
+      transform,
+    } = realTimeStyle;
 
     // 设置不需要 invert 的样式的当前值
     el.style.opacity = opacity;
 
     flipUnit.current.layout = layout;
     flipUnit.current.opacity = opacity;
+    flipUnit.prevLast.transform = transform;
     flipUnit.preparing = true;
     return flipUnit;
   }

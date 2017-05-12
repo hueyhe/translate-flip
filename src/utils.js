@@ -33,6 +33,30 @@ export default {
     return parseFloat(this.getComputedStyle(el).opacity);
   },
 
+  getRealTimeStyle(el) {
+    if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
+      return null;
+    }
+    const layout = this.getLayout(el);
+    const computedStyle = this.getComputedStyle(el);
+    return {
+      layout,
+      margin: {
+        left: parseFloat(computedStyle.marginLeft),
+        top: parseFloat(computedStyle.marginTop),
+      },
+      opacity: parseFloat(computedStyle.opacity),
+      transform: computedStyle.transform,
+    };
+  },
+
+  getTransform(el) {
+    if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
+      return null;
+    }
+    return this.getComputedStyle(el).transform;
+  },
+
   /**
    * 判断对象是否是 DOM Element
    *
