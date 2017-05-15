@@ -76,10 +76,10 @@ class FLIP {
    *
    * @type object
    * @prop {object} layout - 节点根据 Web API element.getBoundingClientRect() 获取的数据对象
-   * @prop {object} margin - 节点 margin 数据
-   * @prop {number} margin.left - 节点 margin-left computed style，类型为浮点数
-   * @prop {number} margin.top - 节点 margin-top computed style，类型为浮点数
    * @prop {number} opacity - 节点透明度数据，类型为浮点数
+   * @prop {object} styleRect - 节点样式中 top, left 数据
+   * @prop {number} styleRect.left - 节点 left computed style，类型为浮点数
+   * @prop {number} styleRect.top - 节点 top computed style，类型为浮点数
    */
 
   /**
@@ -163,21 +163,32 @@ class FLIP {
     const flipId = `flip-${(new Date()).getTime()}`;
     el.dataset.flipId = flipId;
 
-    const layout = utils.getLayout(el);
-    const margin = utils.getMargin(el);
-    const opacity = utils.getOpacity(el);
+    // 若没有定义 position
+    // 则默认是相对定位
+    // 否则 LAST 步骤位移失效
+    if (el.style.position === '') {
+      el.style.position = 'relative';
+    }
+
+    const realTimeStyles = utils.getRealTimeStyles(el);
+    const {
+      layout,
+      opacity,
+      styleRect,
+    } = realTimeStyles;
+
     this.flipUnits[flipId] = {
       id: flipId,
       el,
       stats: {
         layout,
-        margin,
         opacity,
+        styleRect,
       },
       current: {
         layout,
-        margin,
         opacity,
+        styleRect,
       },
       preparing,
     };
@@ -263,8 +274,8 @@ class FLIP {
     const { stats } = flipUnit;
 
     const {
-      margin,
       layout,
+      styleRect,
     } = stats;
 
     const {
@@ -274,11 +285,11 @@ class FLIP {
     } = last;
 
     if (utils.exists(x)) {
-      el.style.marginLeft = `${margin.left + x}px`;
+      el.style.left = `${styleRect.left + x}px`;
     }
 
     if (utils.exists(y)) {
-      el.style.marginTop = `${margin.top + y}px`;
+      el.style.top = `${styleRect.top + y}px`;
     }
 
     if (utils.exists(scale)) {
@@ -481,8 +492,11 @@ class FLIP {
     const el = element;
     const flipUnit = this.getFlipUnit(el.dataset.flipId);
 
-    const layout = utils.getLayout(el);
-    const opacity = utils.getOpacity(el);
+    const realTimeStyles = utils.getRealTimeStyles(el);
+    const {
+      layout,
+      opacity,
+    } = realTimeStyles;
 
     // 设置不需要 invert 的样式的当前值
     el.style.opacity = opacity;

@@ -15,22 +15,48 @@ export default {
     return el.getBoundingClientRect();
   },
 
-  getMargin(el) {
+  getMargin(el, styles) {
     if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
       return null;
     }
-    const computedStyle = this.getComputedStyle(el);
+    const computedStyle = this.exists(styles) ? styles : this.getComputedStyle(el);
     return {
       left: parseFloat(computedStyle.marginLeft),
       top: parseFloat(computedStyle.marginTop),
     };
   },
 
-  getOpacity(el) {
+  getOpacity(el, styles) {
     if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
       return null;
     }
-    return parseFloat(this.getComputedStyle(el).opacity);
+    const computedStyle = this.exists(styles) ? styles : this.getComputedStyle(el);
+    return parseFloat(computedStyle.opacity);
+  },
+
+  getRealTimeStyles(el) {
+    if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
+      return null;
+    }
+    const computedStyle = this.getComputedStyle(el);
+    return {
+      layout: this.getLayout(el),
+      opacity: this.getOpacity(el, computedStyle),
+      styleRect: this.getStyleRect(el, computedStyle),
+    };
+  },
+
+  getStyleRect(el, styles) {
+    if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
+      return null;
+    }
+    const computedStyle = this.exists(styles) ? styles : this.getComputedStyle(el);
+    const top = computedStyle.top.replace(/px/, '') - 0;
+    const left = computedStyle.left.replace(/px/, '') - 0;
+    return {
+      left,
+      top,
+    };
   },
 
   /**
