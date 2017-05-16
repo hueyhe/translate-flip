@@ -35,7 +35,7 @@ $ yarn add translate-flip
 
 ## 特点
 ### 极致轻量
-translate-flip 是一个十分轻量的动画库，打包后大小仅为 6.83 kb
+translate-flip 是一个十分轻量的动画库，打包后大小仅为 10.2 kb
 
 ### 高性能
 采用 FLIP 动画思想，确保动画的性能开销最小。如有兴趣请参考 [FLIP Your Animations](https://aerotwist.com/blog/flip-your-animations/)
@@ -174,6 +174,8 @@ const customizeEasing = Easing.Cubic(x1, y1, x2, y2);
 `options` 拥有可配置参数如下
 
 ```javascript
+// v0.3.3 以下支持 use3d 配置项
+// v0.4.0 暂时移除，将于下一个版本加入
 options: {
   /**
    * 是否使用 translate3d 进行位移动画，默认下为 true
@@ -188,25 +190,26 @@ options: {
 
 ### 节点定位方式
 
-translate-flip 仅支持 **相对定位** (position: relative) 且 **不依赖 margin 进行定位** 的元素进行动画。
+translate-flip 最终是通过 css 样式中的 **left** 与 **right** 实现位移，因此不支持通过 `margin: auto` 类似自适应定位的元素进行动画。
 
 若你想进行动画的元素包含任一如下样式，则建议在元素外包裹一层容器 (container)，将以下定位样式应用至容器上，再对元素进行 FLIP 动画
 
 FLIP 不支持的定位样式
-- `position: absolute`
-- `position: fixed`
-- `margin-*: <number>px`
 - `margin: auto`
+- `left: 50%`
+- `top: 30%`
 
 FLIP 不支持且未来也不会支持包含这些样式元素的动画。
 
 ### 目前支持的动画属性
 
+注意: rotate 属性暂时不支持连续相对动画
+
 - **x**: x 轴平移量
 - **y**: y 轴平移量
 - **scale**: 放大与缩小，1 为原始大小
 - **opacity**: 透明度，[0, 1] 浮点数
-
+- **rotate**: 旋转角度 [-360, 360]
 
 <!-- BACKERS/ -->
 

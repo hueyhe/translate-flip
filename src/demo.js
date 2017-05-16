@@ -29,8 +29,9 @@ button.addEventListener('click', () => {
   FLIP.magic(flipElement, {
     x: 500 * Math.random(),
     y: 500 * Math.random(),
-    // opacity: 0,
-    scale: 0.5,
+    opacity: Math.random(),
+    scale: Math.random(),
+    rotate: 180 * Math.random(),
   }, 1000, FLIP.Easing.MDCubic, {
     use3d: false,
   }).then(el => console.log(el));
