@@ -85,7 +85,10 @@ export default {
       if (indexRow === 0 && indexColumn === 2) matrixInfo.e = value;
       if (indexRow === 1 && indexColumn === 2) matrixInfo.f = value;
     });
-    const rotate = Math.atan(matrixInfo.b / matrixInfo.a);
+    let rotate = Math.atan(matrixInfo.b / matrixInfo.a);
+    if (matrixInfo.b > 0 && matrixInfo.a < 0) rotate = Math.PI + rotate;
+    if (matrixInfo.b < 0 && matrixInfo.a < 0) rotate = Math.PI + rotate;
+    if (matrixInfo.b < 0 && matrixInfo.a > 0) rotate = (2 * Math.PI) + rotate;
     const angle = (rotate / Math.PI) * 180;
     const scale = matrixInfo.a / Math.cos(rotate);
     const x = matrixInfo.e;
