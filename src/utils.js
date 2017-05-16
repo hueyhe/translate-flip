@@ -43,6 +43,7 @@ export default {
       layout: this.getLayout(el),
       opacity: this.getOpacity(el, computedStyle),
       styleRect: this.getStyleRect(el, computedStyle),
+      transform: this.getTransform(el, computedStyle),
     };
   },
 
@@ -57,6 +58,14 @@ export default {
       left,
       top,
     };
+  },
+
+  getTransform(el, styles) {
+    if (!this.isDOMElement(el) && !this.isDOMNode(el)) {
+      return null;
+    }
+    const computedStyle = this.exists(styles) ? styles : this.getComputedStyle(el);
+    return computedStyle.transform;
   },
 
   /**

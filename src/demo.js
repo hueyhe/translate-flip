@@ -30,7 +30,8 @@ button.addEventListener('click', () => {
     x: 500 * Math.random(),
     y: 500 * Math.random(),
     // opacity: 0,
-    scale: 0.5,
+    scale: Math.random(),
+    rotate: 90 * Math.random(),
   }, 1000, FLIP.Easing.MDCubic, {
     use3d: false,
   }).then(el => console.log(el));

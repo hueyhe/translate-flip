@@ -44,5 +44,8 @@
   ],
   "contributors": [
     "hueyhe <sihonghuey@163.com> (http://hueyhe.com)"
-  ]
+  ],
+  "dependencies": {
+    "mathjs": "^3.13.1"
+  }
 }

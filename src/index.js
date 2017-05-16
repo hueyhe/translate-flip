@@ -22,6 +22,7 @@
 
 import Easing from './easing';
 
+import matrix from './matrix';
 import utils from './utils';
 
 import { ERROR_PREFIX, INFO_PREFIX } from './constants';
@@ -212,7 +213,8 @@ class FLIP {
     const flipUnit = this.getFlipUnit(el.dataset.flipId);
     const {
       current,
-      options,
+      last,
+      // options,
     } = flipUnit;
 
     const {
@@ -222,11 +224,8 @@ class FLIP {
         width: originWidth,
         height: originHeight,
       },
+      rotate,
     } = current;
-
-    const last = {
-      layout: utils.getLayout(el),
-    };
 
     const {
       layout: {
@@ -245,9 +244,16 @@ class FLIP {
     };
 
     el.style.transformOrigin = '0 0';
-    el.style.transform = options.use3d ?
-      `translate3d(${invert.x}px, ${invert.y}px, 0) scale(${invert.sx}, ${invert.sy})` :
-      `translate(${invert.x}px, ${invert.y}px) scale(${invert.sx}, ${invert.sy})`;
+    // el.style.transform = options.use3d ?
+    //   `translate3d(${invert.x}px, ${invert.y}px, 0) scale(${invert.sx}, ${invert.sy})` :
+    //   `translate(${invert.x}px, ${invert.y}px) scale(${invert.sx}, ${invert.sy})`;
+    const transform = matrix.transformMatrix(
+      1,
+      [invert.x, invert.y],
+      invert.sx,
+      rotate,
+    );
+    el.style.transform = transform;
 
     flipUnit.el = el;
 
@@ -296,6 +302,12 @@ class FLIP {
       el.style.width = `${layout.width * scale}px`;
       el.style.height = `${layout.height * scale}px`;
     }
+
+    const lastLayout = utils.getLayout(el);
+
+    flipUnit.last = {
+      layout: lastLayout,
+    };
 
     flipUnit.el = el;
 
@@ -410,7 +422,6 @@ class FLIP {
         function elTransitionEnd() {
           if (flipUnit.magicWand === magicWand) {
             el.style.transition = '';
-            el.style.transformOrigin = '';
             flipUnit.promise = null;
             resolve(this);
           }
@@ -442,15 +453,22 @@ class FLIP {
 
     const flipUnit = this.getFlipUnit(el.dataset.flipId);
 
-    const { opacity } = last;
+    const {
+      opacity,
+      rotate,
+    } = last;
 
     // 应用动画
     el.style.transition = `all ${duration}ms ${easing}`;
     // Play!
-    el.style.transform = '';
+    let transform = '';
     if (utils.exists(opacity)) {
       el.style.opacity = opacity;
     }
+    if (utils.exists(rotate)) {
+      transform += `rotate(${rotate}deg)`;
+    }
+    el.style.transform = transform;
 
     flipUnit.el = el;
 
@@ -492,17 +510,38 @@ class FLIP {
     const el = element;
     const flipUnit = this.getFlipUnit(el.dataset.flipId);
 
+    const transform = utils.getTransform(el);
+
+    // 获取到运行时 transform
+    // 停止动画
+    el.style.transition = '';
+
+    // 去除 rotate 与 skew 的影响
+    // translate & scale 组成的 transform matrix
+    const transformInfo = matrix.getTransformInfo(transform);
+    const tsTransform = matrix.transformMatrix(
+      1,
+      [transformInfo.translate.x, transformInfo.translate.y],
+      transformInfo.scale,
+    );
+
+    // 应用并记录坐标
+    el.style.transform = tsTransform;
+
     const realTimeStyles = utils.getRealTimeStyles(el);
     const {
       layout,
       opacity,
     } = realTimeStyles;
 
+    el.style.transform = '';
+
     // 设置不需要 invert 的样式的当前值
     el.style.opacity = opacity;
 
     flipUnit.current.layout = layout;
     flipUnit.current.opacity = opacity;
+    flipUnit.current.rotate = transformInfo.rotate;
     flipUnit.preparing = true;
     return flipUnit;
   }
