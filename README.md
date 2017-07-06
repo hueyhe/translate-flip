@@ -35,7 +35,7 @@ $ yarn add translate-flip
 
 ## 特点
 ### 极致轻量
-translate-flip 是一个十分轻量的动画库，打包后大小仅为 10.2 kb
+translate-flip 是一个十分轻量的动画库，大小仅为 10.8 kb
 
 ### 高性能
 采用 FLIP 动画思想，确保动画的性能开销最小。如有兴趣请参考 [FLIP Your Animations](https://aerotwist.com/blog/flip-your-animations/)
@@ -174,8 +174,7 @@ const customizeEasing = Easing.Cubic(x1, y1, x2, y2);
 `options` 拥有可配置参数如下
 
 ```javascript
-// v0.3.3 以下支持 use3d 配置项
-// v0.4.0 暂时移除，将于下一个版本加入
+// v0.4.1 起生效
 options: {
   /**
    * 是否使用 translate3d 进行位移动画，默认下为 true
@@ -203,7 +202,7 @@ FLIP 不支持且未来也不会支持包含这些样式元素的动画。
 
 ### 目前支持的动画属性
 
-注意: rotate 属性暂时不支持连续相对动画
+注意: rotate 属性部分支持连续相对动画，在连续中断动画中旋转角度仅能完成 360° 以内的旋转，连续不中断动画则可以完成超 360° 旋转
 
 - **x**: x 轴平移量
 - **y**: y 轴平移量
