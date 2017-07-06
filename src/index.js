@@ -189,6 +189,7 @@ class FLIP {
       current: {
         layout,
         opacity,
+        rotate: 0,
         styleRect,
       },
       preparing,
@@ -214,7 +215,7 @@ class FLIP {
     const {
       current,
       last,
-      // options,
+      options,
     } = flipUnit;
 
     const {
@@ -244,15 +245,20 @@ class FLIP {
     };
 
     el.style.transformOrigin = '0 0';
-    // el.style.transform = options.use3d ?
-    //   `translate3d(${invert.x}px, ${invert.y}px, 0) scale(${invert.sx}, ${invert.sy})` :
-    //   `translate(${invert.x}px, ${invert.y}px) scale(${invert.sx}, ${invert.sy})`;
-    const transform = matrix.transformMatrix(
-      1,
-      [invert.x, invert.y],
-      invert.sx,
-      rotate,
-    );
+    const transformT = options.use3d ?
+      `translate3d(${invert.x}px, ${invert.y}px, 0)` :
+      `translate(${invert.x}px, ${invert.y}px)`;
+    const transformS = `scale(${invert.sx}, ${invert.sy})`;
+    const transformR = `rotate(${rotate}deg)`;
+
+    const transform = [transformT, transformS, transformR].join(' ');
+
+    // const transform = matrix.transformMatrix(
+    //   1,
+    //   [invert.x, invert.y],
+    //   invert.sx,
+    //   rotate,
+    // );
     el.style.transform = transform;
 
     flipUnit.el = el;
