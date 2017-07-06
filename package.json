@@ -1,6 +1,6 @@
 {
   "name": "translate-flip",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "FLIP 高性能动画库",
   "main": "dist/translate-flip.min.js",
   "scripts": {
