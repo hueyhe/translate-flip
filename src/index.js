@@ -23,6 +23,7 @@
 import Easing from './easing';
 
 import matrix from './matrix';
+import polyfill from './polyfill';
 import utils from './utils';
 
 import { ERROR_PREFIX, INFO_PREFIX } from './constants';
@@ -433,7 +434,7 @@ class FLIP {
           }
         }
 
-        el.addEventListener('transitionend', elTransitionEnd, {
+        el.addEventListener(polyfill.transitionend(), elTransitionEnd, {
           capture: false,
           once: true,
         });
