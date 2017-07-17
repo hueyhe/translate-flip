@@ -182,6 +182,12 @@ There are several configurable options as below
 // took effect since v0.4.1
 options: {
   /**
+   * callback when animation is interrupted
+   * param is the element animated
+   */
+  interrupt: (el) => { /* do stuff */ },
+
+  /**
    * whether or not to use translate3d while animating the element, true by default
    * Please pay attention, under some specific circumstances, using translate3d may cause distortion.
    * For instance a param in transform is a decimal of many places, in this case the element may be distortion while using translate3d

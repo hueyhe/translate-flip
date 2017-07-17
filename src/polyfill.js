@@ -20,6 +20,6 @@ export default {
     if (!transition) {
       throw new Error('Your browser do not support transitionend event. Please try it on other morden browsers.');
     }
-    return transition;
+    return transitions[transition];
   },
 };
