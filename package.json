@@ -1,6 +1,6 @@
 {
   "name": "translate-flip",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "FLIP high performance CSS3 transformations & transitions",
   "main": "dist/translate-flip.min.js",
   "scripts": {
