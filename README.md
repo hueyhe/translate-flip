@@ -16,7 +16,7 @@
 
 <!-- DESCRIPTION/ -->
 
-FLIP high performace CSS3 transformations & transitions
+FLIP high performance CSS3 transformations & transitions
 
 <!-- /DESCRIPTION -->
 
