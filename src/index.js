@@ -88,6 +88,7 @@ class FLIP {
    * @typedef FlipOptions - FLIP 动画单元配置项
    *
    * @type object
+   * @prop {function} interrupt - 动画被中断时回调，参数为节点
    * @prop {boolean} [use3d=true] - 是否使用 translate3d 进行位移动画
    */
 
@@ -336,6 +337,10 @@ class FLIP {
     const promise = flipUnit.promise || {};
     if (typeof promise.reject === 'function') {
       // promise.reject(`${INFO_PREFIX} FLIP ${flipId} animation aborted.`);
+      const { options } = flipUnit;
+      if (typeof options.interrupt === 'function') {
+        options.interrupt(flipUnit.el);
+      }
       console.info(`${INFO_PREFIX} FLIP ${flipId} animation aborted.`);
     }
     flipUnit.promise = {

@@ -34,6 +34,9 @@ button.addEventListener('click', () => {
     rotate: 720 * Math.random(),
   }, 1000, FLIP.Easing.MDCubic, {
     use3d: false,
+    interrupt: (el) => {
+      console.log('interrupted', el);
+    },
   }).then(el => console.log(el));
 });
 

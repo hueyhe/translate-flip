@@ -16,38 +16,42 @@
 
 <!-- DESCRIPTION/ -->
 
-FLIP 高性能动画库
+FLIP high performace CSS3 transformations & transitions
 
 <!-- /DESCRIPTION -->
 
 
-## 安装
+## Installation
 
-通过 npm
+Via npm
 ```bash
 $ npm install translate-flip --save
 ```
 
-通过 yarn
+Via yarn
 ```bash
 $ yarn add translate-flip
 ```
 
-## 特点
-### 极致轻量
-translate-flip 是一个十分轻量的动画库，大小仅为 10.8 kb
+## Features
+### Extremely light weight
+translate-flip is an extremely light weight transformation helper tool. It's only 10.8 kb after minimize.
 
-### 高性能
-采用 FLIP 动画思想，确保动画的性能开销最小。如有兴趣请参考 [FLIP Your Animations](https://aerotwist.com/blog/flip-your-animations/)
+### High performance
+Inspired by FLIP animation. Guarantee the least cost of making things move. If you are interested how FLIP works, please refer to [FLIP Your Animations](https://aerotwist.com/blog/flip-your-animations/).
 
-### 动画过程中中断？随时都可以
-translate-flip 执行的动画可以在任何一帧中断，并从该帧开始进行下一个动画，需要做的仅仅只是再次调用 `FLIP.magic`
+### Interrupt during animation? Anytime!
+translate-flip can interrupt the animation in any frame you want. It will start the next animation right after the frame you interrupted. All you need to do is simply call `FLIP.magic`.
 
-## 基本使用
+## Basic usage
 
-基本 API 为 `FLIP.magic(el, last, duration, easing, options)`，返回值为 `Promise` 对象
+Basic API is as below:
 
-以下代码采用 es6 语法
+`FLIP.magic(el, last, duration, easing, options)`
+
+It returns a `Promise` object.
+
+Code below uses es6 feature:
 
 ```javascript
 import FLIP from 'translate-flip';
@@ -60,28 +64,29 @@ FLIP.magic(element, {
   opacity: 0.4,
   scale: 0.5,
 }, 1000, Easing.Ease).then(el => {
-  // 动画结束 callback
-  // 回调函数参数为执行动画的节点
+  // Animation end callback
+  // parameter is the element which is just animated
 }).catch(error => {
   // catch error
 });
 ```
 
-## 进阶使用
+## Advance usage
 
-### 断点续播
+### Interrupt then play
 
-如何中断动画，在中断的那一帧改变动画结束状态，继续动画？很简单！你只需要再次调用 `FLIP.magic` 就可以了
+It is possible for you to interrupt an animation and then play another animation right after that frame. All you need to do is just call `FLIP.magic` whenever you want to interrupt.
+
 ```javascript
 FLIP.magic(element, {
   x: 100,
   y: 200,
 }, 1000);
 
-// 100ms 后，让节点改变移动轨迹
-// 只需要再次施加魔法
-// 上面的动画就会被打断
-// 并且平滑地完成下面的动画
+// 100ms later, change the moving destination of the element
+// all you need to do is applying the magic again
+// previous animation would be interrupted
+// then smoothly play the lastest animation
 window.setTimeout(() => {
   FLIP.magic(element, {
     x: 300,
@@ -90,67 +95,67 @@ window.setTimeout(() => {
 }, 100);
 ```
 
-### 连续相对动画
+### Animation routine
 
-translate-flip 中执行动画的位移等参数，都是相对节点第一次动画前时状态的偏移，如果你希望相对于节点当前的状态进行动画，那么就需要为节点重新注册 FLIP 动画。
+Params including x, y, etc in translate-flip is relative to the element's initial position and status. If you want to transform the element according to the element's current position or status, you need to reload your element for translate-flip.
 
-不改变节点的初始位置:
+Not reloading:
 
 ```javascript
-// 节点初始位置为 x = 0, y = 0
+// initial position of the element is x = 0, y = 0
 FLIP
   .magic(element, {
     x: 100,
     y: 200,
   }, 1000)
   .then(el => {
-    // 此时节点当前位置为 x = 100, y = 200
-    // 初始位置仍为 x = 0, y = 0
+    // now the position of element is x = 100, y = 200
+    // but initial position is still x = 0, y = 0
     FLIP.magic(el, {
       x: 100,
       y: 200,
     }, 1000);
-    // 动画结束后 x = 100, y = 200
+    // after second animation, position of the element will be x = 100, y = 200
   });
 
 
 ```
 
-动画结束后更新节点的初始位置:
+Reload after the first animation:
 
 ```javascript
-// 节点初始位置为 x = 0, y = 0
+// initial position of the element is x = 0, y = 0
 FLIP
   .magic(element, {
     x: 100,
     y: 200,
   }, 1000)
   .then(el => {
-    // 重新注册 FLIP
+    // reload element for translate-flip
     FLIP.reload(el);
-    // 此时节点的初始状态变更为 x = 100, y = 200
+    // the initial position changed to x = 100, y = 200
     FLIP.magic(el, {
       x: 100,
       y: 200,
     }, 1000);
-    // 动画结束后 x = 200, y = 400
+    // after second animation, position of the element will be x = 200, y = 400
   });
 ```
 
-### 过渡函数
+### Easing functions
 
-#### 内置过渡函数
+#### Built-in easing functions
 
-translate-flip 提供了几个内置的过渡函数
+translate-flip provides some built-in easing functions
 
 - Ease
 - EaseIn
 - EaseOut
 - EaseInOut
 - Linear
-- MDCubic: 符合 Material Design 过渡规范的贝塞尔曲线
+- MDCubic: Conform to the standard bezier curve in Material Design
 
-基本使用方式: 
+basic usage of easing functions: 
 
 ```javascript
 const { Easing } = FLIP;
@@ -161,54 +166,60 @@ FLIP.magic(element, {
 }, 1000, Easing.Linear);
 ```
 
-#### 自定义过渡函数
+#### Customize easing functions
 
-基于 CSS 提供的 `cubic-bezier` 函数，translate-flip 支持自定义贝塞尔曲线过渡函数，具体可以参考 [Cubic Bezier](http://cubic-bezier.com/)
+Based on the `cubic-bezier` function supported by CSS, translate-flip allow you to customize your own easing function. For more details you can refer to [Cubic Bezier](http://cubic-bezier.com/).
 
 ```javascript
 const customizeEasing = Easing.Cubic(x1, y1, x2, y2);
 ```
 
-### 可配置动画参数
+### Configure your animation
 
-`options` 拥有可配置参数如下
+There are several configurable options as below
 
 ```javascript
-// v0.4.1 起生效
+// took effect since v0.4.1
 options: {
   /**
-   * 是否使用 translate3d 进行位移动画，默认下为 true
-   * 需要注意的是，在一些特定情况下，例如 transform 的参数是一个位数较多的浮点数
-   * 使用 translate3d 可能会导致节点元素显示失真
+   * callback when animation is interrupted
+   * param is the element animated
+   */
+  interrupt: (el) => { /* do stuff */ },
+
+  /**
+   * whether or not to use translate3d while animating the element, true by default
+   * Please pay attention, under some specific circumstances, using translate3d may cause distortion.
+   * For instance a param in transform is a decimal of many places, in this case the element may be distortion while using translate3d
    */
   use3d: true,
 }
 ```
 
-## 需要注意的问题
+## Something you need to know
 
-### 节点定位方式
+### Way for translate-flip to locate an element
 
-translate-flip 最终是通过 css 样式中的 **left** 与 **right** 实现位移，因此不支持通过 `margin: auto` 类似自适应定位的元素进行动画。
+Implementation of moving element from original place to target place is via **left** & **right** in css. Therefore elements with self-adaption, such as `margin: auto`, may not be animated correctly while using translate-flip.
 
-若你想进行动画的元素包含任一如下样式，则建议在元素外包裹一层容器 (container)，将以下定位样式应用至容器上，再对元素进行 FLIP 动画
+If you want to animate element which contains any properties below, we suggest wrapping the element with a container and apply such css properties to it. And then FLIP with the element.
 
-FLIP 不支持的定位样式
+CSS properties FLIP not supporting
 - `margin: auto`
 - `left: 50%`
 - `top: 30%`
 
-FLIP 不支持且未来也不会支持包含这些样式元素的动画。
+translate-flip does not support and also would not support elements with these css properties.
 
-### 目前支持的动画属性
+### Supported animation params
 
-注意: rotate 属性部分支持连续相对动画，在连续中断动画中旋转角度仅能完成 360° 以内的旋转，连续不中断动画则可以完成超 360° 旋转
+Attention: rotate is partly supported. In animation routine, if interrupted, rotation can only perform angle less than 360°. If not rotation can perform angle larger than 360°. It is restricted by [Interpolation of Matrices](https://www.w3.org/TR/css-transforms-1/#matrix-interpolation) & [Mathematical Description of Transform Functions](https://www.w3.org/TR/css-transforms-1/#mathematical-description).
 
-- **x**: x 轴平移量
-- **y**: y 轴平移量
-- **scale**: 放大与缩小，1 为原始大小
-- **opacity**: 透明度，[0, 1] 浮点数
-- **rotate**: 旋转角度 [-360, 360]
+- **x**: translation along the X axis
+- **y**: translation along the Y axis
+- **scale**: scaling size, 1 for primitive size
+- **opacity**: opacity, [0, 1] float
+- **rotate**: angle of rotation [-360, 360]
 
 <!-- BACKERS/ -->
 
